@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="diceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f1f5f9"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+  
+  <!-- Camera Lens Graphic Behind Dice -->
+  <circle cx="256" cy="256" r="160" fill="none" stroke="#38bdf8" stroke-width="12" opacity="0.4"/>
+  <circle cx="256" cy="256" r="110" fill="none" stroke="#0284c7" stroke-width="8" stroke-dasharray="20 15"/>
+
+  <!-- Dice -->
+  <g transform="translate(161, 161)">
+    <rect x="0" y="0" width="190" height="190" rx="38" fill="url(#diceGrad)" filter="url(#shadow)"/>
+    <rect x="8" y="8" width="174" height="174" rx="30" fill="none" stroke="#e2e8f0" stroke-width="3"/>
+    <text x="95" y="135" font-family="-apple-system, Outfit, sans-serif" font-size="110" font-weight="900" fill="#0f172a" text-anchor="middle">📷</text>
+  </g>
+</svg>

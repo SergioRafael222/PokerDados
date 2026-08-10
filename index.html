@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Poker de Dados - Folha de Pontuação</title>
+  
+  <!-- PWA & Mobile Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Poker de Dados">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="app">
+    <header>
+      <h1>Poker de Dados</h1>
+      <p id="app-subtitle">Folha de Pontuação Digital</p>
+      <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.5rem;">
+        <button type="button" id="pwa-install-btn" class="btn btn-secondary pwa-install-btn" style="display: none; width: auto;">
+          📲 Instalar App
+        </button>
+        <a href="./camera/index.html" class="btn btn-secondary" style="width: auto; text-decoration: none; font-size: 0.85rem; padding: 0.5rem 0.9rem;">
+          📷 Experimentar Versão com Câmera
+        </a>
+      </div>
+    </header>
+
+    <!-- SETUP SCREEN -->
+    <div id="setup-screen" class="screen active">
+      <div class="setup-group">
+        <h3>Escolha o Modo de Jogo</h3>
+        <div class="mode-selector">
+          <button type="button" id="mode-individual-btn" class="mode-btn selected" onclick="selectGameMode('individual')">
+            Jogo Individual
+          </button>
+          <button type="button" id="mode-teams-btn" class="mode-btn" onclick="selectGameMode('teams')">
+            2 contra 2 (Equipas)
+          </button>
+        </div>
+      </div>
+
+      <!-- Individual Mode Setup -->
+      <div id="individual-setup" class="setup-group">
+        <div class="player-count-selector">
+          <label for="player-count">Número de Jogadores:</label>
+          <select id="player-count" onchange="onPlayerCountChange(this.value)">
+            <option value="2">2 Jogadores</option>
+            <option value="3">3 Jogadores</option>
+            <option value="4" selected>4 Jogadores</option>
+            <option value="5">5 Jogadores</option>
+            <option value="6">6 Jogadores</option>
+          </select>
+        </div>
+        
+        <h3>Nomes dos Jogadores</h3>
+        <div id="individual-players-inputs" class="player-input-container">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Team Mode Setup -->
+      <div id="teams-setup" class="setup-group" style="display: none;">
+        <h3>Nomes das Equipas e Jogadores</h3>
+        <div class="player-input-container">
+          <div class="team-box team-1">
+            <h4>Equipa 1</h4>
+            <div style="display: flex; flex-direction: column; gap: 0.50rem;">
+              <input type="text" id="team1-p1" class="input-field" placeholder="Jogador 1" value="Jogador 1">
+              <input type="text" id="team1-p2" class="input-field" placeholder="Jogador 2" value="Jogador 2">
+            </div>
+          </div>
+          <div class="team-box team-2">
+            <h4>Equipa 2</h4>
+            <div style="display: flex; flex-direction: column; gap: 0.50rem;">
+              <input type="text" id="team2-p1" class="input-field" placeholder="Jogador 3" value="Jogador 3">
+              <input type="text" id="team2-p2" class="input-field" placeholder="Jogador 4" value="Jogador 4">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-primary" onclick="startGame()">
+        Começar Jogo
+      </button>
+    </div>
+
+    <!-- GAMEPLAY SCREEN -->
+    <div id="game-screen" class="screen">
+      <!-- Turn Indicator -->
+      <div id="turn-indicator" class="turn-indicator" style="display: none;">
+        <div class="turn-indicator-info">
+          <span class="turn-indicator-label">Vez de jogar</span>
+          <span id="turn-indicator-name" class="turn-indicator-name">-</span>
+        </div>
+        <button type="button" class="btn-skip-turn" onclick="skipTurn()" title="Passar a vez">⏭</button>
+      </div>
+
+      <!-- Winner Banner -->
+      <div id="winner-banner" class="winner-banner" style="display: none;">
+        <h3 id="winner-title">Líder: -</h3>
+        <p id="winner-detail">-</p>
+      </div>
+
+      <!-- Container for stacked tables -->
+      <div id="scorecards-container">
+        <!-- Dynamic rendering via JS -->
+      </div>
+
+      <!-- Action Footer -->
+      <div class="game-actions">
+        <button type="button" class="btn btn-secondary" onclick="resetToSetup()">
+          Novo Jogo (Reiniciar)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCORE PICKER MODAL -->
+  <div id="score-picker-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div id="picker-category" class="modal-title">Categoria</div>
+        <div id="picker-player" class="modal-subtitle">Jogador</div>
+      </div>
+      
+      <!-- Threshold Alert Banner (shows if column is locked and requires opening value) -->
+      <div id="picker-threshold-info" class="modal-threshold-alert" style="display: none;">
+        Coluna fechada. Precisas de pelo menos 7 pontos para abrir!
+      </div>
+      
+      <!-- Option buttons grid -->
+      <div id="picker-buttons" class="modal-buttons-grid">
+        <!-- Dynamic rendering based on category -->
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="closeScorePicker()">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-danger" style="flex: 1;" onclick="clearScoreValue()">
+          Limpar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
